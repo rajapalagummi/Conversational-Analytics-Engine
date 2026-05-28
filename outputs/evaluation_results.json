@@ -1,0 +1,244 @@
+{
+  "evaluated_at": "2026-05-28T02:51:23.175980",
+  "n_questions": 8,
+  "strategies": [
+    "zero_shot",
+    "few_shot",
+    "chain_of_thought"
+  ],
+  "summary": {
+    "zero_shot": {
+      "avg_score": 32.5,
+      "success_rate": 37.5,
+      "avg_rows": 99.9
+    },
+    "few_shot": {
+      "avg_score": 0.0,
+      "success_rate": 0.0,
+      "avg_rows": 0.0
+    },
+    "chain_of_thought": {
+      "avg_score": 11.4,
+      "success_rate": 12.5,
+      "avg_rows": 0.1
+    }
+  },
+  "detailed": [
+    {
+      "question": "Who scored the most goals across all matches?",
+      "strategy": "zero_shot",
+      "sql": "SELECT player_name, COUNT(goals) AS goal_count FROM player_match_stats GROUP BY player_name ORDER BY goal_count DESC LIMIT 1;",
+      "error": null,
+      "n_rows": 1,
+      "score": 86,
+      "grade": "A"
+    },
+    {
+      "question": "Who scored the most goals across all matches?",
+      "strategy": "few_shot",
+      "sql": "SELECT player_name, SUM(goals) as total_goals FROM player_match_stats GROU\u001b[4D\u001b[K GROUP BY player_name ORDER BY total_goals DESC LIMIT 1",
+      "error": "Execution failed on sql 'SELECT player_name, SUM(goals) as total_goals FROM player_match_stats GROU\u001b[4D\u001b[K GROUP BY player_name ORDER BY total_goals DESC LIMIT 1': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Who scored the most goals across all matches?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT player_name, COUNT(goals) as total_goals FROM player_match_stats WHERE goals IS NOT NULL -- To exclude null values (assumption: goals are no\u001b[2D\u001b[K not null in this dataset) GROUP BY player_name ORDER BY total_goals DESC LIMIT 1;",
+      "error": null,
+      "n_rows": 1,
+      "score": 91,
+      "grade": "A"
+    },
+    {
+      "question": "Which players had the most shots on target?",
+      "strategy": "zero_shot",
+      "sql": "SELECT player_name, COUNT(CASE WHEN outcome = 'On Target' THEN shot_id END\u001b[3D\u001b[K END) as shots_on_target FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id A\u001b[1D\u001b[K AND shots.match_id = player_match_stats.match_id GROUP BY player_name ORDER BY shots_on_target DESC;",
+      "error": "Execution failed on sql 'SELECT player_name, COUNT(CASE WHEN outcome = 'On Target' THEN shot_id END\u001b[3D\u001b[K END) as shots_on_target FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id A\u001b[1D\u001b[K AND shots.match_id = player_match_stats.match_id GROUP BY player_name ORDER BY shots_on_target DESC;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players had the most shots on target?",
+      "strategy": "few_shot",
+      "sql": "SELECT player_name, team_name, SUM(shots_on_target) as total_shots_on_targ\u001b[19D\u001b[K total_shots_on_target FROM player_match_stats GROUP BY player_name, team_na\u001b[7D\u001b[K team_name ORDER BY total_shots_on_target DESC",
+      "error": "Execution failed on sql 'SELECT player_name, team_name, SUM(shots_on_target) as total_shots_on_targ\u001b[19D\u001b[K total_shots_on_target FROM player_match_stats GROUP BY player_name, team_na\u001b[7D\u001b[K team_name ORDER BY total_shots_on_target DESC': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players had the most shots on target?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT player_name, COUNT(*) as Shots_On_Target FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id WHERE outcome='Shot on Target' GROUP BY player_name ORDER BY Shots_On_Target DESC;",
+      "error": "Execution failed on sql 'SELECT player_name, COUNT(*) as Shots_On_Target FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id WHERE outcome='Shot on Target' GROUP BY player_name ORDER BY Shots_On_Target DESC;': ambiguous column name: player_name",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What is the average pass accuracy for each team?",
+      "strategy": "zero_shot",
+      "sql": "SELECT team_name, AVG(pass_accuracy) as avg_pass_accuracy FROM player_match_stats JOIN matches ON matches.match_id = player_match_stats.match_id JOIN team_match_stats ON team_match_stats.match_id = matches.match_id GROUP BY team_name;",
+      "error": "Execution failed on sql 'SELECT team_name, AVG(pass_accuracy) as avg_pass_accuracy FROM player_match_stats JOIN matches ON matches.match_id = player_match_stats.match_id JOIN team_match_stats ON team_match_stats.match_id = matches.match_id GROUP BY team_name;': ambiguous column name: team_name",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What is the average pass accuracy for each team?",
+      "strategy": "few_shot",
+      "sql": "SELECT team_name, ROUND(AVG(pass_accuracy), 2) as avg_pass_accuracy FROM t\u001b[1D\u001b[K team_match_stats GROUP BY team_name",
+      "error": "Execution failed on sql 'SELECT team_name, ROUND(AVG(pass_accuracy), 2) as avg_pass_accuracy FROM t\u001b[1D\u001b[K team_match_stats GROUP BY team_name': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What is the average pass accuracy for each team?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT team_name, AVG(pass_accuracy) as avg_pass_accuracy FROM passes JOIN player_match_stats ON passes.match_id = player_match_stats.match_id AN\u001b[2D\u001b[K AND passes.player_id = player_match_stats.player_id GROUP BY team_name;",
+      "error": "Execution failed on sql 'SELECT team_name, AVG(pass_accuracy) as avg_pass_accuracy FROM passes JOIN player_match_stats ON passes.match_id = player_match_stats.match_id AN\u001b[2D\u001b[K AND passes.player_id = player_match_stats.player_id GROUP BY team_name;': near \"AN\": syntax error",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players completed the most dribbles successfully?",
+      "strategy": "zero_shot",
+      "sql": "SELECT player_name, SUM(dribble_success_pct) as total_successful_dribbles FROM player_match_stats GROUP BY player_name ORDER BY total_successful_dribbles DESC;",
+      "error": null,
+      "n_rows": 399,
+      "score": 83,
+      "grade": "B"
+    },
+    {
+      "question": "Which players completed the most dribbles successfully?",
+      "strategy": "few_shot",
+      "sql": "SELECT player_name, team_name, SUM(dribble_success_pct) as total_successfu\u001b[15D\u001b[K total_successful_dribbles FROM player_match_stats GROUP BY player_name, tea\u001b[3D\u001b[K team_name ORDER BY total_successful_dribbles DESC",
+      "error": "Execution failed on sql 'SELECT player_name, team_name, SUM(dribble_success_pct) as total_successfu\u001b[15D\u001b[K total_successful_dribbles FROM player_match_stats GROUP BY player_name, tea\u001b[3D\u001b[K team_name ORDER BY total_successful_dribbles DESC': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players completed the most dribbles successfully?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT player_name, COUNT(*) as num_successful_dribbles FROM player_match_stats JOIN passes ON player_match_stats.match_id = passes.match_id AND player_mat\u001b[10D\u001b[K player_match_stats.player_id = passes.player_id WHERE position LIKE '%D%' -- assuming that the 'D' suffix indicates defensi\u001b[7D\u001b[K defensive players (if not, adjust the condition as needed) AND dribble_success_pct = 100 GROUP BY player_name ORDER BY num_successful_dribbles DESC;",
+      "error": "Execution failed on sql 'SELECT player_name, COUNT(*) as num_successful_dribbles FROM player_match_stats JOIN passes ON player_match_stats.match_id = passes.match_id AND player_mat\u001b[10D\u001b[K player_match_stats.player_id = passes.player_id WHERE position LIKE '%D%' -- assuming that the 'D' suffix indicates defensi\u001b[7D\u001b[K defensive players (if not, adjust the condition as needed) AND dribble_success_pct = 100 GROUP BY player_name ORDER BY num_successful_dribbles DESC;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which team applied the most pressing pressure?",
+      "strategy": "zero_shot",
+      "sql": "SELECT team_name FROM pressures JOIN team_match_stats ON pressures.match_id = team_match_stats.match_id ORDER BY SUM(pressures.pressures) DESC LIMIT 1;",
+      "error": "Execution failed on sql 'SELECT team_name FROM pressures JOIN team_match_stats ON pressures.match_id = team_match_stats.match_id ORDER BY SUM(pressures.pressures) DESC LIMIT 1;': no such table: pressures",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which team applied the most pressing pressure?",
+      "strategy": "few_shot",
+      "sql": "SELECT team_name, SUM(pressures) as total_pressures FROM team_match_stats \u001b[K GROUP BY team_name ORDER BY total_pressures DESC",
+      "error": "Execution failed on sql 'SELECT team_name, SUM(pressures) as total_pressures FROM team_match_stats \u001b[K GROUP BY team_name ORDER BY total_pressures DESC': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which team applied the most pressing pressure?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT team_name, SUM(CASE WHEN under_pressure = 1 AND outcome IS NOT NULL THEN 1 ELSE 0 EN\u001b[2D\u001b[K END) AS shots_under_pressure, SUM(CASE WHEN under_pressure = 1 AND outcome IS NULL THEN 1 ELSE 0 END) A\u001b[1D\u001b[K AS passes_under_pressure FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id JOIN passes ON shots.match_id = passes.match_id AND player_match_stats.player_\u001b[26D\u001b[K player_match_stats.player_id = passes.player_id GROUP BY team_name ORDER BY SUM(shots_under_pressure + passes_under_pressure) DESC;",
+      "error": "Execution failed on sql 'SELECT team_name, SUM(CASE WHEN under_pressure = 1 AND outcome IS NOT NULL THEN 1 ELSE 0 EN\u001b[2D\u001b[K END) AS shots_under_pressure, SUM(CASE WHEN under_pressure = 1 AND outcome IS NULL THEN 1 ELSE 0 END) A\u001b[1D\u001b[K AS passes_under_pressure FROM shots JOIN player_match_stats ON shots.player_id = player_match_stats.player_id JOIN passes ON shots.match_id = passes.match_id AND player_match_stats.player_\u001b[26D\u001b[K player_match_stats.player_id = passes.player_id GROUP BY team_name ORDER BY SUM(shots_under_pressure + passes_under_pressure) DESC;': near \"EN\": syntax error",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Who had the highest expected goals (xG) vs actual goals?",
+      "strategy": "zero_shot",
+      "sql": "SELECT player_name, xg - goals AS xg_diff FROM player_match_stats LEFT JOIN team_match_stats ON player_match_stats.match_id = team_match_stat\u001b[15D\u001b[K team_match_stats.match_id AND player_match_stats.team_name = team_match_sta\u001b[14D\u001b[K team_match_stats.team_name WHERE result NOT LIKE 'TBD' -- excluding matches with incomplete results GROUP BY player_name ORDER BY xg_diff DESC LIMIT 1;",
+      "error": "Execution failed on sql 'SELECT player_name, xg - goals AS xg_diff FROM player_match_stats LEFT JOIN team_match_stats ON player_match_stats.match_id = team_match_stat\u001b[15D\u001b[K team_match_stats.match_id AND player_match_stats.team_name = team_match_sta\u001b[14D\u001b[K team_match_stats.team_name WHERE result NOT LIKE 'TBD' -- excluding matches with incomplete results GROUP BY player_name ORDER BY xg_diff DESC LIMIT 1;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Who had the highest expected goals (xG) vs actual goals?",
+      "strategy": "few_shot",
+      "sql": "SELECT player_name, team_name, ABS(round(SUM(xg) - SUM(goals), 3)) as diff\u001b[4D\u001b[K diff FROM player_match_stats GROUP BY player_name, team_name ORDER BY diff \u001b[K DESC LIMIT 10",
+      "error": "Execution failed on sql 'SELECT player_name, team_name, ABS(round(SUM(xg) - SUM(goals), 3)) as diff\u001b[4D\u001b[K diff FROM player_match_stats GROUP BY player_name, team_name ORDER BY diff \u001b[K DESC LIMIT 10': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Who had the highest expected goals (xG) vs actual goals?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT player_name, xg - goals as xg_vs_goals_diff FROM player_match_stats JOIN shots ON player_match_stats.player_id = shots.player_id AND player_mat\u001b[10D\u001b[K player_match_stats.match_id = shots.match_id WHERE outcome IN ('Goal') GROUP BY player_name ORDER BY xg_vs_goals_diff DESC LIMIT 1;",
+      "error": "Execution failed on sql 'SELECT player_name, xg - goals as xg_vs_goals_diff FROM player_match_stats JOIN shots ON player_match_stats.player_id = shots.player_id AND player_mat\u001b[10D\u001b[K player_match_stats.match_id = shots.match_id WHERE outcome IN ('Goal') GROUP BY player_name ORDER BY xg_vs_goals_diff DESC LIMIT 1;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players created the most key passes?",
+      "strategy": "zero_shot",
+      "sql": "SELECT player_name, SUM(key_passes) AS total_key_passes FROM player_match_stats GROUP BY player_name ORDER BY total_key_passes DESC;",
+      "error": null,
+      "n_rows": 399,
+      "score": 91,
+      "grade": "A"
+    },
+    {
+      "question": "Which players created the most key passes?",
+      "strategy": "few_shot",
+      "sql": "SELECT player_name, team_name, SUM(key_passes) as total_key_passes FROM pl\u001b[2D\u001b[K player_match_stats GROUP BY player_name, team_name ORDER BY total_key_passe\u001b[15D\u001b[K total_key_passes DESC LIMIT 10",
+      "error": "Execution failed on sql 'SELECT player_name, team_name, SUM(key_passes) as total_key_passes FROM pl\u001b[2D\u001b[K player_match_stats GROUP BY player_name, team_name ORDER BY total_key_passe\u001b[15D\u001b[K total_key_passes DESC LIMIT 10': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "Which players created the most key passes?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT player_name, COUNT(*) as total_key_passes FROM passes JOIN player_match_stats ON passes.match_id = player_match_stats.match_id AND\u001b[3D\u001b[K AND passes.player_id = player_match_stats.player_id WHERE technique = 'through_ball' AND technique IS NOT NULL GROUP BY player_name ORDER BY total_key_passes DESC;",
+      "error": "Execution failed on sql 'SELECT player_name, COUNT(*) as total_key_passes FROM passes JOIN player_match_stats ON passes.match_id = player_match_stats.match_id AND\u001b[3D\u001b[K AND passes.player_id = player_match_stats.player_id WHERE technique = 'through_ball' AND technique IS NOT NULL GROUP BY player_name ORDER BY total_key_passes DESC;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What was the shot conversion rate for each team?",
+      "strategy": "zero_shot",
+      "sql": "SELECT tms.team_name, COUNT(sh.outcome) AS goal_count, SUM(sh.statsbomb_xg)\u001b[20D\u001b[K SUM(sh.statsbomb_xg) AS total_shots, (COUNT(sh.outcome)/SUM(sh.statsbomb_xg)) * 100 AS conversion_rate FROM shots sh JOIN player_match_stats pms ON sh.match_id = pms.match_id AND sh.player_id \u001b[K = pms.player_id JOIN team_match_stats tms ON pms.team_name = tms.team_name GROUP BY tms.team_name;",
+      "error": "Execution failed on sql 'SELECT tms.team_name, COUNT(sh.outcome) AS goal_count, SUM(sh.statsbomb_xg)\u001b[20D\u001b[K SUM(sh.statsbomb_xg) AS total_shots, (COUNT(sh.outcome)/SUM(sh.statsbomb_xg)) * 100 AS conversion_rate FROM shots sh JOIN player_match_stats pms ON sh.match_id = pms.match_id AND sh.player_id \u001b[K = pms.player_id JOIN team_match_stats tms ON pms.team_name = tms.team_name GROUP BY tms.team_name;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What was the shot conversion rate for each team?",
+      "strategy": "few_shot",
+      "sql": "SELECT team_name, ROUND(AVG(shots_on_target) / AVG(shots), 3) as shot_conv\u001b[9D\u001b[K shot_conversion_rate FROM team_match_stats GROUP BY team_name ORDER BY shot\u001b[4D\u001b[K shot_conversion_rate DESC",
+      "error": "Execution failed on sql 'SELECT team_name, ROUND(AVG(shots_on_target) / AVG(shots), 3) as shot_conv\u001b[9D\u001b[K shot_conversion_rate FROM team_match_stats GROUP BY team_name ORDER BY shot\u001b[4D\u001b[K shot_conversion_rate DESC': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    },
+    {
+      "question": "What was the shot conversion rate for each team?",
+      "strategy": "chain_of_thought",
+      "sql": "SELECT tms.team_name, COUNT(CASE WHEN s.outcome = 'Goal' THEN 1 END) as goa\u001b[3D\u001b[K goals, COUNT(s.shot_id) as total_shots, ROUND(((COUNT(CASE WHEN s.outcome = 'Goal' THEN 1 END) / COUNT(s.sho\u001b[11D\u001b[K COUNT(s.shot_id)) * 100), 2) AS shot_conversion_rate FROM shots s JOIN team_match_stats tms ON s.match_id = tms.match_id JOIN matches m ON s.match_id = m.match_id GROUP BY tms.team_name;",
+      "error": "Execution failed on sql 'SELECT tms.team_name, COUNT(CASE WHEN s.outcome = 'Goal' THEN 1 END) as goa\u001b[3D\u001b[K goals, COUNT(s.shot_id) as total_shots, ROUND(((COUNT(CASE WHEN s.outcome = 'Goal' THEN 1 END) / COUNT(s.sho\u001b[11D\u001b[K COUNT(s.shot_id)) * 100), 2) AS shot_conversion_rate FROM shots s JOIN team_match_stats tms ON s.match_id = tms.match_id JOIN matches m ON s.match_id = m.match_id GROUP BY tms.team_name;': unrecognized token: \"\u001b\"",
+      "n_rows": 0,
+      "score": 0,
+      "grade": "F"
+    }
+  ]
+}

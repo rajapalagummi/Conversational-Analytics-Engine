@@ -1,0 +1,38 @@
+[
+  {
+    "question": "Who scored the most goals?",
+    "sql": "SELECT player_name, team_name, SUM(goals) as total_goals FROM player_match\u001b[12D\u001b[K player_match_stats GROUP BY player_name, team_name ORDER BY total_goals DES\u001b[3D\u001b[K DESC LIMIT 10",
+    "score": 0,
+    "n_rows": 0
+  },
+  {
+    "question": "Which players had the highest expected goals (xG)?",
+    "sql": "SELECT player_name, team_name, ROUND(SUM(statsbomb_xg), 3) as total_xg FRO\u001b[3D\u001b[K FROM shots GROUP BY player_name, team_name ORDER BY total_xg DESC LIMIT 10",
+    "score": 0,
+    "n_rows": 0
+  },
+  {
+    "question": "What is the average pass accuracy for each team?",
+    "sql": "SELECT team_name, ROUND(AVG(pass_accuracy), 2) as avg_pass_accuracy FROM t\u001b[1D\u001b[K team_match_stats GROUP BY team_name",
+    "score": 0,
+    "n_rows": 0
+  },
+  {
+    "question": "Which players completed the most dribbles?",
+    "sql": "SELECT player_name, team_name, SUM(dribbles) as total_dribbles FROM player\u001b[6D\u001b[K player_match_stats GROUP BY player_name, team_name ORDER BY total_dribbles \u001b[K DESC",
+    "score": 0,
+    "n_rows": 0
+  },
+  {
+    "question": "Which team applied the most pressing pressure?",
+    "sql": "SELECT team_name, SUM(pressures) as total_pressures FROM team_match_stats \u001b[K GROUP BY team_name ORDER BY total_pressures DESC",
+    "score": 0,
+    "n_rows": 0
+  },
+  {
+    "question": "Who had the most assists and key passes?",
+    "sql": "SELECT player_name, team_name, SUM(assists) as total_assists, SUM(key_pass\u001b[12D\u001b[K SUM(key_passes) as total_key_passes FROM player_match_stats GROUP BY player\u001b[6D\u001b[K player_name, team_name ORDER BY total_assists + total_key_passes DESC LIMIT\u001b[5D\u001b[K LIMIT 10",
+    "score": 0,
+    "n_rows": 0
+  }
+]

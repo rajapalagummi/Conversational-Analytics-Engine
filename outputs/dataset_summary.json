@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-05-28T02:51:23.177767",
+  "data_source": "StatsBomb Open Data \u2014 La Liga 2015/16",
+  "matches": "50",
+  "shots": "1205",
+  "passes": "47847",
+  "players": "399",
+  "teams": "19",
+  "top_scorer": {
+    "player_name": "Borja Gonz\u00e1lez Tom\u00e1s",
+    "g": 6
+  },
+  "total_goals": "136",
+  "avg_xg_shot": 0.1045
+}
