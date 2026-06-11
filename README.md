@@ -79,7 +79,6 @@ The statistical analysis reveals that Borja González Tomás led the 50-match sa
 
 ```bash
 # 1. Setup
-cd ~/Desktop/Projects/conversational-analytics-engine
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 
@@ -97,19 +96,6 @@ python3 main.py --strategy zero_shot --query "Which players completed the most d
 
 # 5. Skip data ingestion if already loaded
 python3 main.py --skip-ingest
-```
-
----
-
-## Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Conversational Analytics Engine natural language to SQL StatsBomb real data three prompting strategies"
-git remote add origin https://github.com/rajapalagummi/Conversational-Analytics-Engine.git
-git branch -M main
-git push -u origin main
 ```
 
 ---
